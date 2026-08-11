@@ -49,6 +49,8 @@ The 1.x client does not implement WooCommerce HTTPS Basic Authentication. Use it
 mvn verify -Dgpg.skip=true
 ```
 
+Maintainers preparing a Central release should follow [RELEASING.md](RELEASING.md).
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) before opening an issue or pull request.
 
 ## License
