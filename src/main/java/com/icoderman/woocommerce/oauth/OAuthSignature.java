@@ -58,10 +58,9 @@ public class OAuthSignature {
             return "";
         }
         Map<String, String> oauthParameters = getAsMap(config, endpoint, httpMethod, params);
-        String encodedSignature = oauthParameters.get(OAuthHeader.OAUTH_SIGNATURE.getValue())
-                .replace(SpecialSymbol.PLUS.getPlain(), SpecialSymbol.PLUS.getEncoded());
-        oauthParameters.put(OAuthHeader.OAUTH_SIGNATURE.getValue(), encodedSignature);
-        return mapToString(oauthParameters, SpecialSymbol.EQUAL.getPlain(), SpecialSymbol.AMP.getPlain());
+        Map<String, String> encodedParameters = percentEncodeParameters(oauthParameters);
+        return mapToString(getSortedParameters(encodedParameters),
+                SpecialSymbol.EQUAL.getPlain(), SpecialSymbol.AMP.getPlain());
     }
 
     public static String getAsQueryString(OAuthConfig config, String endpoint, HttpMethod httpMethod) {
@@ -95,15 +94,18 @@ public class OAuthSignature {
         }
     }
 
-    private static String getSignatureBaseString(String url, String method, Map<String, String> parameters) {
+    static String getSignatureBaseString(String url, String method, Map<String, String> parameters) {
         String requestURL = urlEncode(url);
         // 1. Percent encode every key and value that will be signed.
         Map<String, String> encodedParameters = percentEncodeParameters(parameters);
 
         // 2. Sort the list of parameters alphabetically by encoded key.
         encodedParameters = getSortedParameters(encodedParameters);
-        String paramsString = mapToString(encodedParameters, SpecialSymbol.EQUAL.getEncoded(), SpecialSymbol.AMP.getEncoded());
-        return String.format(BASE_SIGNATURE_FORMAT, method, requestURL, paramsString);
+        String normalizedParameters = mapToString(encodedParameters,
+                SpecialSymbol.EQUAL.getPlain(), SpecialSymbol.AMP.getPlain());
+
+        // 3. Percent encode the complete normalized parameter string for the signature base string.
+        return String.format(BASE_SIGNATURE_FORMAT, method, requestURL, percentEncode(normalizedParameters));
     }
 
     private static String mapToString(Map<String, String> paramsMap, String keyValueDelimiter, String paramsDelimiter) {
@@ -128,7 +130,7 @@ public class OAuthSignature {
         try {
             return URLEncoder.encode(s, UTF_8)
                     // OAuth encodes some characters differently:
-                    .replace(SpecialSymbol.PLUS.getPlain(), SpecialSymbol.PLUS.getEncoded())
+                    .replace(SpecialSymbol.PLUS.getPlain(), "%20")
                     .replace(SpecialSymbol.STAR.getPlain(), SpecialSymbol.STAR.getEncoded())
                     .replace(SpecialSymbol.TILDE.getEncoded(), SpecialSymbol.TILDE.getPlain());
         } catch (UnsupportedEncodingException e) {

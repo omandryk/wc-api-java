@@ -9,7 +9,7 @@
 
     <name>WooCommerce API Java Wrapper</name>
     <description>Java wrapper for WooCommerce REST API</description>
-    <url>https://github.com/icoderman/wc-api-java</url>
+    <url>https://github.com/omandryk/wc-api-java</url>
 
     <licenses>
         <license>
@@ -23,32 +23,24 @@
             <id>icoderman</id>
             <name>Oleksandr Mandryk</name>
             <email>icoderman@gmail.com</email>
-            <url>https://github.com/icoderman</url>
+            <url>https://github.com/omandryk</url>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:icoderman/wc-api-java.git</connection>
-        <developerConnection>scm:git:git@github.com:icoderman/wc-api-java.git</developerConnection>
-        <url>git@github.com/icoderman/wc-api-java.git</url>
+        <connection>scm:git:https://github.com/omandryk/wc-api-java.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/omandryk/wc-api-java.git</developerConnection>
+        <url>https://github.com/omandryk/wc-api-java</url>
         <tag>HEAD</tag>
     </scm>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <properties>
-        <jackson.version>2.10.0</jackson.version>
-        <httpclient.version>4.5.10</httpclient.version>
-        <junit.version>4.12</junit.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <jackson.version>2.18.6</jackson.version>
+        <httpclient.version>4.5.14</httpclient.version>
+        <junit.version>4.13.2</junit.version>
     </properties>
 
     <dependencies>
@@ -84,17 +76,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
+                <version>3.14.1</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -108,7 +96,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.11.3</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -122,7 +110,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
+                <version>3.2.8</version>
                 <configuration>
                     <useAgent>true</useAgent>
                 </configuration>
@@ -140,19 +128,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
+                <version>3.1.1</version>
             </plugin>
 
         </plugins>
