@@ -14,7 +14,7 @@ A small Java wrapper for the WooCommerce REST API, originally released in 2016 a
 <dependency>
   <groupId>com.icoderman</groupId>
   <artifactId>wc-api-java</artifactId>
-  <version>1.4</version>
+  <version>1.5.0</version>
 </dependency>
 ```
 
