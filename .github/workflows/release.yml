@@ -1,0 +1,71 @@
+name: Release to Maven Central
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Verify the release build or upload a signed bundle for manual publishing
+        required: true
+        default: verify
+        type: choice
+        options:
+          - verify
+          - upload
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: inputs.mode == 'verify'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+      - run: mvn --batch-mode --no-transfer-progress clean verify
+
+  upload:
+    if: inputs.mode == 'upload'
+    runs-on: ubuntu-latest
+    environment: maven-central
+    steps:
+      - name: Require a release tag
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" != "tag" || "${GITHUB_REF_NAME}" != v* ]]; then
+            echo "Upload mode must be dispatched from a v* release tag." >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Confirm a non-SNAPSHOT project version
+        shell: bash
+        run: |
+          project_version="$(mvn --quiet help:evaluate -Dexpression=project.version -DforceStdout)"
+          if [[ "${project_version}" == *-SNAPSHOT ]]; then
+            echo "Refusing to upload SNAPSHOT version ${project_version}." >&2
+            exit 1
+          fi
+          if [[ "${GITHUB_REF_NAME}" != "v${project_version}" ]]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match project version ${project_version}." >&2
+            exit 1
+          fi
+      - name: Upload signed bundle for Central validation
+        run: mvn --batch-mode --no-transfer-progress clean deploy -Prelease
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
