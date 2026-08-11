@@ -12,7 +12,7 @@ public final class OAuthConfig {
                 consumerSecret == null || consumerSecret.isEmpty()) {
             throw new IllegalArgumentException("All arguments are required");
         }
-        this.url = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+        this.url = url;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
     }

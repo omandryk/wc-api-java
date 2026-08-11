@@ -10,4 +10,4 @@ Requirements: JDK 8 or newer and Maven 3.8 or newer.
 mvn verify -Dgpg.skip=true
 ```
 
-Integration tests require a disposable WooCommerce store and credentials supplied through `WC_URL`, `WC_CONSUMER_KEY`, and `WC_CONSUMER_SECRET`. Never commit real credentials.
+The legacy live-store integration tests are currently disabled with JUnit's `@Ignore`. For manual testing, use a disposable WooCommerce store and supply `WC_URL`, `WC_CONSUMER_KEY`, and `WC_CONSUMER_SECRET` through environment variables. Never commit real credentials.

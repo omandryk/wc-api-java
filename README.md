@@ -22,7 +22,7 @@ A small Java wrapper for the WooCommerce REST API, originally released in 2016 a
 
 ```java
 OAuthConfig config = new OAuthConfig(
-    "https://store.example.com",
+    "http://localhost",
     System.getenv("WC_CONSUMER_KEY"),
     System.getenv("WC_CONSUMER_SECRET")
 );
@@ -39,9 +39,9 @@ Never commit WooCommerce credentials. Supply them through a secret manager or en
 
 - Java 8 or newer
 - WooCommerce REST API v2/v3 endpoints
-- OAuth 1.0a request signing used by the historical 1.x API
+- Legacy OAuth 1.0a request signing over HTTP
 
-The compatibility matrix will be expanded as part of the 1.5 revival. HTTPS-first authentication and a modernized API are being evaluated separately for a future major release.
+The 1.x client does not implement WooCommerce HTTPS Basic Authentication. Use it only in a controlled environment until HTTPS-first authentication is available in a future major release.
 
 ## Development
 
