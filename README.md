@@ -1,45 +1,56 @@
 # WooCommerce API Java Wrapper
-[![Build Status](https://travis-ci.org/icoderman/wc-api-java.svg?branch=master)](https://travis-ci.org/icoderman/wc-api-java)
 
-Java wrapper for WooCommerce REST API. The library supports the latest versions of WooCommerce REST API only
-with the OAuth 1.0a authentication over the HTTP protocol.
+[![CI](https://github.com/omandryk/wc-api-java/actions/workflows/ci.yml/badge.svg)](https://github.com/omandryk/wc-api-java/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/com.icoderman/wc-api-java.svg)](https://central.sonatype.com/artifact/com.icoderman/wc-api-java)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Setup
-wc-api-java is available on maven central:
+A small Java wrapper for the WooCommerce REST API, originally released in 2016 and distributed through Maven Central.
+
+> **Project revival:** version 1.4 is the latest published release. The 1.5 line restores maintenance, testing, and modern release infrastructure while preserving the existing API. Do not use unreleased snapshots in production.
+
+## Installation
+
 ```xml
-    <dependency>
-        <groupId>com.icoderman</groupId>
-        <artifactId>wc-api-java</artifactId>
-        <version>1.4</version>
-    </dependency>
+<dependency>
+  <groupId>com.icoderman</groupId>
+  <artifactId>wc-api-java</artifactId>
+  <version>1.4</version>
+</dependency>
 ```
 
 ## Usage
 
 ```java
-    public static void main(String[] args) {
-        // Setup client
-        OAuthConfig config = new OAuthConfig("http://woocommerce.com", "consumerKey", "consumerSecret");
-        WooCommerce wooCommerce = new WooCommerceAPI(config, ApiVersionType.V3);
+OAuthConfig config = new OAuthConfig(
+    "http://localhost",
+    System.getenv("WC_CONSUMER_KEY"),
+    System.getenv("WC_CONSUMER_SECRET")
+);
+WooCommerce wooCommerce = new WooCommerceAPI(config, ApiVersionType.V3);
 
-        // Prepare object for request
-        Map<String, Object> productInfo = new HashMap<>();
-        productInfo.put("name", "Premium Quality");
-        productInfo.put("type", "simple");
-        productInfo.put("regular_price", "21.99");
-        productInfo.put("description", "Pellentesque habitant morbi tristique senectus et netus");
-
-        // Make request and retrieve result
-        Map product = wooCommerce.create(EndpointBaseType.PRODUCTS.getValue(), productInfo);
-
-        System.out.println(product.get("id"));
-
-        // Get all with request parameters
-        Map<String, String> params = new HashMap<>();
-        params.put("per_page","100");
-        params.put("offset","0");
-        List products = wooCommerce.getAll(EndpointBaseType.PRODUCTS.getValue(), params);
-
-        System.out.println(products.size());
-    }
+Map<String, String> params = new HashMap<>();
+params.put("per_page", "100");
+List products = wooCommerce.getAll(EndpointBaseType.PRODUCTS.getValue(), params);
 ```
+
+Never commit WooCommerce credentials. Supply them through a secret manager or environment variables.
+
+## Compatibility
+
+- Java 8 or newer
+- WooCommerce REST API v2/v3 endpoints
+- Legacy OAuth 1.0a request signing over HTTP
+
+The 1.x client does not implement WooCommerce HTTPS Basic Authentication. Use it only in a controlled environment until HTTPS-first authentication is available in a future major release.
+
+## Development
+
+```bash
+mvn verify -Dgpg.skip=true
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md) before opening an issue or pull request.
+
+## License
+
+MIT © Oleksandr Mandryk
